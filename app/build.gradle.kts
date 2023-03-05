@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("kotlinx-serialization")
 }
 
 android {
@@ -57,7 +56,6 @@ android {
 val composeVersion = "1.3.3"
 val composeActivityVersion = "1.6.1"
 val composeNavigationVersion = "2.5.3"
-val composeSystemUiControllerVersion = "0.18.0"
 val koinCoreVersion = "3.3.3"
 val koinAndroidVersion = "3.3.3"
 val koinAndroidxCompose = "3.4.2"
@@ -67,7 +65,6 @@ val junitVersion = "4.13.2"
 val androidJunitVersion = "1.1.4"
 val espressoVersion = "3.5.0"
 val roomVersion = "2.4.3"
-val loggingInterceptorVersion = "4.10.0"
 val media3Version = "1.0.0-beta03"
 val accompanistVersion = "0.28.0"
 
@@ -106,7 +103,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$composeSystemUiControllerVersion")
 
     implementation("androidx.core:core-ktx:$androidCoreVersion")
     testImplementation("junit:junit:$junitVersion")
