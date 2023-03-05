@@ -126,31 +126,37 @@ class NotesViewModel(
     private fun playNote(id: Long) {
         viewModelScope.launch {
             val note = state.value.notesState.notes[id]!!
-            try {
-                if (note.progressAsString == null) {
-                    playerUseCase.startPlay(id)
-                } else if (state.value.notesState.currentNoteId != id) {
-                    playerUseCase.startPlayWithProgress(id, note.progress)
-                } else {
-                    playerUseCase.play()
-                }
-            } catch (e: Exception) {
-                postEffect(NotesEffect.NoSuchTrack)
+            val success = if (note.progressAsString == null) {
+                playerUseCase.startPlay(id)
+            } else if (state.value.notesState.currentNoteId != id) {
+                playerUseCase.startPlayWithProgress(id, note.progress)
+            } else {
+                playerUseCase.play()
+                true
             }
-            val notes = state.value.notesState.notes.toMutableMap()
-            notes[id] = notes[id]!!.copy(
-                isPlaying = true
-            )
-            setState {
-                copy(
-                    notesState = notesState.copy(
-                        isPlaying = true,
-                        currentNoteId = id,
-                        notes = notes.toImmutableMap()
-                    )
+            if (!success) {
+                playTrackFail(id)
+            } else {
+                val notes = state.value.notesState.notes.toMutableMap()
+                notes[id] = notes[id]!!.copy(
+                    isPlaying = true
                 )
+                setState {
+                    copy(
+                        notesState = notesState.copy(
+                            isPlaying = true,
+                            currentNoteId = id,
+                            notes = notes.toImmutableMap()
+                        )
+                    )
+                }
             }
         }
+    }
+
+    private suspend fun playTrackFail(id: Long) {
+        repository.deleteNote(id)
+        postEffect(NotesEffect.NoSuchTrack)
     }
 
     private fun stopPlayingNote(id: Long) {

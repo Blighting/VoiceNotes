@@ -1,5 +1,8 @@
 package com.example.voicenotes.domain.usecase.player
 
+import android.content.Context
+import android.database.Cursor
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -18,6 +21,7 @@ private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 class PlayerUseCaseImpl(
     private val player: ExoPlayer,
     private val repository: NotesRepository,
+    private val context: Context
 ) : PlayerUseCase {
     private val _musicPlayback = MutableSharedFlow<MusicPlayback>()
     override val musicPlayback: Flow<MusicPlayback> = _musicPlayback
@@ -46,35 +50,49 @@ class PlayerUseCaseImpl(
         }
     }
 
-    override suspend fun startPlay(id: Long) {
-        val track: MediaItem = MediaItem.fromUri(repository.getNote(id).uri)
-        checkMediaItem(track, id)
+    override suspend fun startPlay(id: Long): Boolean {
+        val note = repository.getNote(id)
+        val uri = note.uri
+        if(!ensureMediaItemCorrect(uri)) return false
+        val track: MediaItem = MediaItem.fromUri(uri)
         player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
         player.setMediaItem(track)
         player.prepare()
         player.play()
+        return true
     }
 
-    override suspend fun startPlayWithProgress(id: Long, progress: Float) {
-        val track: MediaItem
-        val targetTime: Long
+    override suspend fun startPlayWithProgress(id: Long, progress: Float): Boolean {
         val note = repository.getNote(id)
-        track = MediaItem.fromUri(note.uri)
-        targetTime = (note.duration * progress).toLong()
-        checkMediaItem(track, id)
+        val uri = note.uri
+        if(!ensureMediaItemCorrect(uri)) return false
+        val track = MediaItem.fromUri(uri)
+        val targetTime = (note.duration * progress).toLong()
         player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
         player.setMediaItem(track)
         player.seekTo(targetTime)
         player.prepare()
         player.play()
+        return true
     }
 
-    private suspend fun checkMediaItem(track: MediaItem, id: Long) {
-        //Kinda bad practice, we better return something like Result class but I am out of time
-        if (track.mediaId == "") {
-            repository.deleteNote(id)
-            throw Exception("No such media item")
+    private fun ensureMediaItemCorrect(uri: String): Boolean {
+        val resolver = context.contentResolver
+        var cursor: Cursor? = null
+        val isUriExist: Boolean = try {
+            cursor = resolver.query(uri.toUri(), null, null, null, null)
+            //cursor null: content Uri was invalid or some other error occurred
+            //cursor.moveToFirst() false: Uri was ok but no entry found.
+            (cursor != null && cursor.moveToFirst())
+        } catch (t: Throwable) {
+            false
+        } finally {
+            try {
+                cursor?.close()
+            } catch (t: Throwable) {
+            }
         }
+        return isUriExist
     }
 
     override fun play() {

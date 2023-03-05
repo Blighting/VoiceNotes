@@ -10,6 +10,7 @@ data class VoiceNotesColors(
     val background: Color,
     val primaryText: Color,
     val cardBackground: Color,
+    val buttonBackground: Color,
 )
 
 private val Colors = VoiceNotesColors(
@@ -18,7 +19,8 @@ private val Colors = VoiceNotesColors(
     text = Color.Black,
     background = Color.White,
     primaryText = Color.Black,
-    cardBackground = Color(0xFFf5f5f5)
+    cardBackground = Color(0xFFf5f5f5),
+    buttonBackground = Color(0xFF6b7984)
 )
 
 val LocalColors = staticCompositionLocalOf { Colors }

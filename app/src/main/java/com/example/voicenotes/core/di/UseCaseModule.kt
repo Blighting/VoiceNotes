@@ -23,7 +23,6 @@ val useCaseModule = module {
 
     single<RecordUseCase> {
         RecordUseCaseImpl(
-//            audioRecordProvider = get(),
             context = androidContext(),
             saveNoteUseCase = get(),
         )
@@ -37,6 +36,7 @@ val useCaseModule = module {
         PlayerUseCaseImpl(
             player = get<ExoPlayer>(),
             repository = get<NotesRepository>(),
+            context = androidContext()
         )
     }
 }

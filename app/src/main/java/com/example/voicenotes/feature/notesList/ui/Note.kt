@@ -75,9 +75,7 @@ fun Note(
                     color = Color.Gray,
                 )
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = model.progressWithDuration,
                     style = TextStyle(
@@ -102,7 +100,8 @@ private fun PlayButton(
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val color = if (isTrackPlaying) Color(0xFF6b7984) else VoiceNotesTheme.colors.primary
+    val color = if (isTrackPlaying) VoiceNotesTheme.colors.buttonBackground
+        else VoiceNotesTheme.colors.primary
     IconButton(
         onClick = onPlay,
         modifier = modifier

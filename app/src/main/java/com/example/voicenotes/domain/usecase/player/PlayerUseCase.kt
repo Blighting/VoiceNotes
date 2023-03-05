@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlayerUseCase {
     val musicPlayback: Flow<MusicPlayback>
-    suspend fun startPlay(id: Long)
-    suspend fun startPlayWithProgress(id: Long, progress: Float)
+    suspend fun startPlay(id: Long): Boolean
+    suspend fun startPlayWithProgress(id: Long, progress: Float): Boolean
     fun play()
     fun pause()
 }

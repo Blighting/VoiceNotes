@@ -11,7 +11,6 @@ class MainApplication : Application() {
         startKoin {
             androidContext(this@MainApplication)
             modules(
-                recorderModule,
                 databaseModule,
                 useCaseModule,
                 repositoryModule,

@@ -2,12 +2,11 @@ package com.example.voicenotes.domain.utils
 
 import android.text.format.DateUtils
 
+private const val SECONDS_IN_MINUTE = 60
+
 fun Long.convertMillisecondsToString(): String {
-    val totalSeconds = this.convertMillisecondsToSeconds()
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-    val secondsString = if (seconds < 10) "0$seconds" else "$seconds"
-    return "$minutes:$secondsString"
+    val totalSeconds = this.convertMillisecondsToSeconds().toInt()
+    return totalSeconds.convertSecondsToString()
 }
 
 private fun Long.convertMillisecondsToSeconds(): Long = this.div(1000)
@@ -22,8 +21,8 @@ fun Long.millisecondsToSimpleDate(): String {
 }
 
 fun Int.convertSecondsToString(): String {
-    val minutes = this / 60
-    val seconds = this % 60
+    val minutes = this / SECONDS_IN_MINUTE
+    val seconds = this % SECONDS_IN_MINUTE
     val secondsString = if (seconds < 10) "0$seconds" else "$seconds"
     return "$minutes:$secondsString"
 }
