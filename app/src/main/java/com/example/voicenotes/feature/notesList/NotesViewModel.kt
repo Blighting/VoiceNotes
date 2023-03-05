@@ -1,6 +1,5 @@
 package com.example.voicenotes.feature.notesList
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.voicenotes.core.base.MviViewModel
 import com.example.voicenotes.data.repository.NotesRepository
@@ -17,9 +16,8 @@ class NotesViewModel(
     private val repository: NotesRepository,
     private val recordUseCase: RecordUseCase,
     private val playerUseCase: PlayerUseCase
-) : MviViewModel<NotesScreenState, Unit>(initialState = NotesScreenState()) {
+) : MviViewModel<NotesScreenState, NotesEffect>(initialState = NotesScreenState()) {
     init {
-        Log.d("LOl","vm")
         viewModelScope.launch {
             repository.getNotesFlow().collect(::updateNotesState)
         }
@@ -126,26 +124,32 @@ class NotesViewModel(
     }
 
     private fun playNote(id: Long) {
-        val note = state.value.notesState.notes[id]!!
-        if (note.progressAsString == null) {
-            playerUseCase.startPlay(id)
-        } else if (state.value.notesState.currentNoteId != id) {
-            playerUseCase.startPlayWithProgress(id, note.progress)
-        } else {
-            playerUseCase.play()
-        }
-        val notes = state.value.notesState.notes.toMutableMap()
-        notes[id] = notes[id]!!.copy(
-            isPlaying = true
-        )
-        setState {
-            copy(
-                notesState = notesState.copy(
-                    isPlaying = true,
-                    currentNoteId = id,
-                    notes = notes.toImmutableMap()
-                )
+        viewModelScope.launch {
+            val note = state.value.notesState.notes[id]!!
+            try {
+                if (note.progressAsString == null) {
+                    playerUseCase.startPlay(id)
+                } else if (state.value.notesState.currentNoteId != id) {
+                    playerUseCase.startPlayWithProgress(id, note.progress)
+                } else {
+                    playerUseCase.play()
+                }
+            } catch (e: Exception) {
+                postEffect(NotesEffect.NoSuchTrack)
+            }
+            val notes = state.value.notesState.notes.toMutableMap()
+            notes[id] = notes[id]!!.copy(
+                isPlaying = true
             )
+            setState {
+                copy(
+                    notesState = notesState.copy(
+                        isPlaying = true,
+                        currentNoteId = id,
+                        notes = notes.toImmutableMap()
+                    )
+                )
+            }
         }
     }
 

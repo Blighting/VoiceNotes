@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 
 private const val TRACK_PROGRESS_REFRESH_RATE_MILLISECONDS = 100L
-private val scope = CoroutineScope(Dispatchers.Main)
+private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
 class PlayerUseCaseImpl(
     private val player: ExoPlayer,
@@ -46,33 +46,34 @@ class PlayerUseCaseImpl(
         }
     }
 
-    override fun startPlay(id: Long) {
-        var track: MediaItem
-        scope.launch {
-            withContext(Dispatchers.Default) {
-                track = MediaItem.fromUri(repository.getNote(id).uri)
-            }
-            player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
-            player.setMediaItem(track)
-            player.prepare()
-            player.play()
-        }
+    override suspend fun startPlay(id: Long) {
+        val track: MediaItem = MediaItem.fromUri(repository.getNote(id).uri)
+        checkMediaItem(track, id)
+        player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
+        player.setMediaItem(track)
+        player.prepare()
+        player.play()
     }
 
-    override fun startPlayWithProgress(id: Long, progress: Float) {
-        scope.launch {
-            var track: MediaItem
-            var targetTime: Long
-            withContext(Dispatchers.Default) {
-                val note = repository.getNote(id)
-                track = MediaItem.fromUri(note.uri)
-                targetTime = (note.duration * progress).toLong()
-            }
-            player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
-            player.setMediaItem(track)
-            player.seekTo(targetTime)
-            player.prepare()
-            player.play()
+    override suspend fun startPlayWithProgress(id: Long, progress: Float) {
+        val track: MediaItem
+        val targetTime: Long
+        val note = repository.getNote(id)
+        track = MediaItem.fromUri(note.uri)
+        targetTime = (note.duration * progress).toLong()
+        checkMediaItem(track, id)
+        player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
+        player.setMediaItem(track)
+        player.seekTo(targetTime)
+        player.prepare()
+        player.play()
+    }
+
+    private suspend fun checkMediaItem(track: MediaItem, id: Long) {
+        //Kinda bad practice, we better return something like Result class but I am out of time
+        if (track.mediaId == "") {
+            repository.deleteNote(id)
+            throw Exception("No such media item")
         }
     }
 

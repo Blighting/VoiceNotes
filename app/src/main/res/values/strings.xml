@@ -6,4 +6,5 @@
     <string name="dialog_note_save_action_cancel">Отмена</string>
     <string name="dialog_note_save_action_save">Сохранить</string>
     <string name="dialog_note_save_title">Сохранить запись</string>
+    <string name="dialog_note_no_such_track">Такой записи больше нет</string>
 </resources>
