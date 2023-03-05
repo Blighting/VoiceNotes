@@ -10,7 +10,7 @@ sealed class SaveDialogEvent : NotesScreenEvent() {
 
 sealed class RecorderEvent : NotesScreenEvent() {
     object ChangeStatus : RecorderEvent()
-    object Cancel: RecorderEvent()
+    object Cancel : RecorderEvent()
 }
 
 sealed class NoteEvent : NotesScreenEvent() {

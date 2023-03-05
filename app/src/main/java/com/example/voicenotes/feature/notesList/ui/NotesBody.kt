@@ -136,8 +136,8 @@ private fun BottomBar(
     val progress by remember(textProgress) {
         derivedStateOf { textProgress }
     }
-    val scaleState by remember(scale){
-        derivedStateOf{scale}
+    val scaleState by remember(scale) {
+        derivedStateOf { scale }
     }
     Box(modifier.fillMaxWidth()) {
         AnimatedVisibility(

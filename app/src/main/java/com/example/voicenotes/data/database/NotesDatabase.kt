@@ -9,6 +9,6 @@ import com.example.voicenotes.domain.models.notes.NoteEntity
     version = 1,
     exportSchema = false
 )
-abstract class NotesDatabase: RoomDatabase() {
+abstract class NotesDatabase : RoomDatabase() {
     abstract fun getNotesDao(): NotesDao
 }

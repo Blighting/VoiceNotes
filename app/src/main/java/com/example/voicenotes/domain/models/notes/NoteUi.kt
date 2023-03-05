@@ -8,7 +8,7 @@ data class NoteUi(
     val duration: String,
     val progress: Float,
     val isPlaying: Boolean,
-){
+) {
     val progressWithDuration: String
         get() = if (progressAsString != null) "$progressAsString/$duration" else "$duration"
 }

@@ -7,7 +7,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,7 +19,7 @@ fun RecordButton(
     isRecording: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val icon = if(isRecording) Icons.Filled.Send else Icons.Filled.Mic
+    val icon = if (isRecording) Icons.Filled.Send else Icons.Filled.Mic
     IconButton(
         modifier = modifier
             .clip(CircleShape)

@@ -119,7 +119,7 @@ private fun ActionButton(
     ) {
         Text(
             text = text,
-            color = if(enabled) textColor else VoiceNotesTheme.colors.cardBackground,
+            color = if (enabled) textColor else VoiceNotesTheme.colors.cardBackground,
             style = MaterialTheme.typography.button
         )
     }

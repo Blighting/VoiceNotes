@@ -1,7 +1,6 @@
 package com.example.voicenotes.data.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -20,5 +19,5 @@ abstract class NotesDao {
     abstract fun getNote(id: Long): NoteEntity
 
     @Query("DELETE FROM note_entity WHERE id=:id")
-    abstract fun deleteNote(id:Long)
+    abstract fun deleteNote(id: Long)
 }

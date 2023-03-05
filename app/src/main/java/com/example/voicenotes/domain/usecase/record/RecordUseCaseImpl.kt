@@ -18,12 +18,10 @@ private const val RECORD_SECONDS_REFRESH_RATE_MILLISECONDS = 1000L
 private val scope = CoroutineScope(Dispatchers.Default)
 
 class RecordUseCaseImpl(
-//    private val audioRecordProvider: AudioRecordProvider,
     private val context: Context,
     private val saveNoteUseCase: SaveNoteUseCase,
 ) : RecordUseCase {
     private val audioRecordProvider: AudioRecordProvider by lazy {
-        Log.d("LOl", "create audio record provider")
         AudioRecordProvider(context)
     }
     private val path by lazy { audioRecordProvider.filesDirPath }

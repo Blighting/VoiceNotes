@@ -21,7 +21,7 @@ val useCaseModule = module {
         )
     }
 
-    single <RecordUseCase> {
+    single<RecordUseCase> {
         RecordUseCaseImpl(
 //            audioRecordProvider = get(),
             context = androidContext(),
