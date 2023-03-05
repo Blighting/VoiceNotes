@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
 import com.example.voicenotes.data.repository.NotesRepository
 import com.example.voicenotes.domain.models.player.MusicPlayback
 import com.example.voicenotes.domain.utils.convertMillisecondsToString
@@ -62,15 +63,14 @@ class PlayerUseCaseImpl(
         return true
     }
 
+    //For some reason this doesnt work
     override suspend fun startPlayWithProgress(id: Long, progress: Float): Boolean {
         val note = repository.getNote(id)
         val uri = note.uri
         if(!ensureMediaItemCorrect(uri)) return false
         val track = MediaItem.fromUri(uri)
         val targetTime = (note.duration * progress).toLong()
-        player.repeatMode = ExoPlayer.REPEAT_MODE_ALL
-        player.setMediaItem(track)
-        player.seekTo(targetTime)
+        player.setMediaItem(track,targetTime)
         player.prepare()
         player.play()
         return true
